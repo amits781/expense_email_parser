@@ -11,15 +11,15 @@ import com.aidy.expense.utils.DateUtils;
 @Component
 public class AxisForexParser implements BankEmailParser {
 
-  private static final Pattern AMOUNT_PATTERN =
-      Pattern.compile("([A-Z]{3}\\s\\d+(?:\\.\\d{1,2})?).*?\\sdebited");
+  private static final Pattern AMOUNT_PATTERN = Pattern.compile(
+      "([A-Z]{3})[\\s\\h]+([\\d,.]+(?:\\.\\d{1,2})?).*?\\sdebited", Pattern.CASE_INSENSITIVE);
   private static final Pattern SOURCE_PATTERN =
-      Pattern.compile("(Axis Bank Forex Card no\\.\\s\\S+)");
+      Pattern.compile("(Axis Bank Forex Card no\\.\\s\\S+)", Pattern.CASE_INSENSITIVE);
 
   // Improved Regex: Looks for "at" followed by the merchant name,
   // stopping before the period and "Available balance"
   private static final Pattern DETAILS_PATTERN =
-      Pattern.compile("\\s+at\\s+(.*?)\\s*\\.\\s*Available balance");
+      Pattern.compile("\\s+at\\s+(.*?)\\s*\\.\\s*Available balance", Pattern.CASE_INSENSITIVE);
 
 
   @Override
@@ -31,10 +31,20 @@ public class AxisForexParser implements BankEmailParser {
   @Override
   public EmailResponseBody parse(EmailRequestBody email) {
     // Step 1: Normalize the body by replacing all whitespace/newlines with a single space
-    String body = email.getBody().replaceAll("\\s+", " ");
+    String body = email.getBody().replaceAll("\\s+", " ").replace('\u00A0', ' ');
 
-    String amount = extract(AMOUNT_PATTERN, body, "Unknown Amount");
-    amount = CurrencyUtil.getCleanAmount(amount);
+    String cleanAmount = "AED ";
+
+    Matcher matcher = AMOUNT_PATTERN.matcher(body);
+    if (matcher.find()) {
+      String currency = matcher.group(1); // e.g., "AED"
+      String value = matcher.group(2); // e.g., "78.00"
+
+      // Use your utility to ensure correct formatting
+      cleanAmount = CurrencyUtil.getCleanAmount(currency + " " + value);
+    }
+
+    String amount = cleanAmount;
     String sourceRaw = extract(SOURCE_PATTERN, body, "Axis Forex Card");
 
     // Step 2: Extract Details (Merchant Name)

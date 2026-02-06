@@ -15,6 +15,7 @@ public class CurrencyUtil {
     // This regex looks for digits and standard decimal/thousand separators
     String numericPart = input.replaceAll("[^0-9.,]", "");
     numericPart = numericPart.replaceFirst("^[^0-9]+", "");
+    numericPart = numericPart.replace(",", "");
 
     // Standardize currency prefix
     String prefix = "";
@@ -32,7 +33,9 @@ public class CurrencyUtil {
 
 
   public static void main(String args[]) {
-    List<String> currencyString = List.of("Rs45", "Rs.45.67", "₹ 456.00", "rs 1,000.56");
+    List<String> currencyString =
+        List.of("Rs45", "Rs.45.67", "₹ 456.00", "rs 1,009.56", "rs 34000.56", "rs 3400000.56",
+            "AED 340000.56", "rs 1006789.56");
     currencyString.forEach(c -> System.out.println(getCleanAmount(c)));
   }
 

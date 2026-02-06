@@ -39,7 +39,7 @@ public class SbiAccountParser implements BankEmailParser {
 
     // SBI Alerts rarely contain a unique Transaction ID in the text body.
     // We return a placeholder.
-    String tnxId = "tnx_id";
+    String tnxId = email.getMessageId();
     amount = CurrencyUtil.getCleanAmount(amount);
     return EmailResponseBody.builder().tnxSource("SBI Account " + account)
         .tnxAmount(amount) // rs236.00

@@ -42,10 +42,11 @@ class IciciParserTest {
         + "              \"messageId\": \"19349284c561fd0f\"\r\n"
         + "            }";
     String expectedResponseJson =
-        "{\r\n" + "            \"tnxSource\": \"ICICI Bank Credit Card XX1003\",\r\n"
-            + "            \"tnxAmount\": \"₹ 1,500.00\",\r\n"
-            + "            \"tnxDate\": \"Wed, 20 Nov 2024 16:09:56 IST\",\r\n"
-            + "            \"tnxDetails\": \"RAMCHANDRA GOPIRAM \\\\\"\r\n" + "        }";
+        "{\r\n" + "        \"tnxSource\": \"ICICI Bank Credit Card XX1003\",\r\n"
+            + "        \"tnxAmount\": \"₹ 1500.00\",\r\n"
+            + "        \"tnxId\": \"19349284c561fd0f\",\r\n"
+            + "        \"tnxDate\": \"Wed, 20 Nov 2024 16:09:56 IST\",\r\n"
+            + "        \"tnxDetails\": \"RAMCHANDRA GOPIRAM \\\\\"\r\n" + "    }";
 
     EmailRequestBody request = toRequestObject(json);
     EmailResponseBody expectedResponse = toResponseObject(expectedResponseJson);
@@ -64,6 +65,7 @@ class IciciParserTest {
     String expectedResponseJson =
         "{\r\n" + "        \"tnxSource\": \"ICICI Bank Credit Card XX0008\",\r\n"
             + "        \"tnxAmount\": \"₹ 877.44\",\r\n"
+            + "        \"tnxId\": \"191511c6f7f79850\",\r\n"
             + "        \"tnxDate\": \"Wed, 14 Aug 2024 19:08:22 IST\",\r\n"
             + "        \"tnxDetails\": \"BOOK MY SHOW PAYU PG\"\r\n" + "    }";
 

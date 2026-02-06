@@ -57,7 +57,7 @@ public class AmazonPayParser implements BankEmailParser {
     }
 
     // 2. Extract Transaction/Order ID
-    String tnxId = extract(ID_PATTERN, body, "tnx_id");
+    String tnxId = extract(ID_PATTERN, body, email.getMessageId());
 
     // 3. Determine Source (Balance vs Voucher)
     String source = "Amazon Pay"; // Default

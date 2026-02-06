@@ -37,7 +37,7 @@ public class IciciCreditCardParser implements BankEmailParser {
     String details = extract(INFO_PATTERN, body, "Unknown");
     String source = extract(SOURCE_PATTERN, body, "Unknown");
 
-    return EmailResponseBody.builder().tnxSource(source)
+    return EmailResponseBody.builder().tnxSource(source).tnxId(email.getMessageId())
         .tnxAmount(amount).tnxDate(DateUtils.getFormattedDate(email.getDate(), amount))
         .tnxDetails(details).build();
   }

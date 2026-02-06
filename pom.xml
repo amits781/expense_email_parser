@@ -12,15 +12,16 @@
 
     <groupId>com.aidy.expense</groupId>
     <artifactId>expense-app</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>Azure Java Functions</name>
+    <name>Aidyn Expense App</name>
 
     <properties>
         <spring-boot-thin-layout.version>1.0.31.RELEASE</spring-boot-thin-layout.version>
 		<!-- Spring Boot start class! WARING: correct class must be set! -->
 		<start-class>com.aidy.expense.BankParserApplication</start-class>
+    		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>21</java.version>
         <azure.functions.maven.plugin.version>1.40.0</azure.functions.maven.plugin.version>
@@ -54,7 +55,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -119,5 +119,15 @@
 				</dependencies>
 			</plugin>
         </plugins>
+        <resources>
+		    <resource>
+		        <directory>src/main/resources</directory>
+		        <filtering>true</filtering>
+		        <includes>
+		        		<include>**/banner.txt</include>
+		        		<include>**/application.properties</include>
+		        </includes>
+		    </resource>
+		</resources>
     </build>
 </project>

@@ -43,7 +43,7 @@ public class HdfcUpiParser implements BankEmailParser {
         amount = CurrencyUtil.getCleanAmount(amount);
         String sourceRaw = extract(SOURCE_PATTERN, body, "HDFC Account");
         String details = extract(DETAILS_PATTERN, body, "Unknown Beneficiary");
-        String txnId = extract(TXN_ID_PATTERN, body, "tnx_id");
+        String txnId = extract(TXN_ID_PATTERN, body, email.getMessageId());
 
         // Format Source to look nicer: "account 2045" -> "HDFC Bank account 2045"
         String formattedSource = "HDFC Bank " + sourceRaw;
