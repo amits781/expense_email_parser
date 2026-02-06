@@ -48,7 +48,7 @@ class SbiParserTest {
         {
             "tnxSource": "SBI Account XXXXX266404",
             "tnxAmount": "₹ 236.00",
-            "tnxId": "tnx_id",
+            "tnxId": "19293264185c9c8f",
             "tnxDate": "Wed, 16 Oct 2024 07:56:50 IST",
             "tnxDetails": "debit by transfer"
         }
