@@ -14,4 +14,33 @@ public class DateUtils {
     return istDateTime.format(formatter);
   }
 
+  public static String getFormattedDate(String date, String currency) {
+    if (date == null || currency == null) {
+      return "";
+    }
+
+    // Ensure currency is in caps for consistent matching
+    String normalizedCurrency = currency.trim().split("\\s+")[0].toUpperCase();
+
+    ZonedDateTime gmtDateTime = ZonedDateTime.parse(date, formatter);
+    ZoneId targetZone;
+
+    switch (normalizedCurrency) {
+      case "AED":
+        // UTC+04:00 for UAE
+        targetZone = ZoneId.of("Asia/Dubai");
+        break;
+      case "INR":
+        // UTC+05:30 for India
+        targetZone = ZoneId.of("Asia/Kolkata");
+        break;
+      default:
+        targetZone = ZoneId.of("Asia/Kolkata");
+        break;
+    }
+
+    ZonedDateTime localDateTime = gmtDateTime.withZoneSameInstant(targetZone);
+    return localDateTime.format(formatter);
+  }
+
 }

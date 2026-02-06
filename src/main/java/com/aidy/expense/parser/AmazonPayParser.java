@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 import com.aidy.expense.dto.EmailRequestBody;
 import com.aidy.expense.dto.EmailResponseBody;
+import com.aidy.expense.utils.CurrencyUtil;
 import com.aidy.expense.utils.DateUtils;
 
 
@@ -65,10 +66,11 @@ public class AmazonPayParser implements BankEmailParser {
     } else if (BALANCE_PATTERN.matcher(body).find()) {
       source = "Amazon Pay Balance";
     }
-
-    return EmailResponseBody.builder().tnxSource(source).tnxAmount(cleanAmount(amount)) // standardizes
-                                                                                        // spaces
-        .tnxId(tnxId).tnxDate(DateUtils.getFormattedDate(email.getDate())).tnxDetails(details)
+    amount = CurrencyUtil.getCleanAmount(amount);
+    return EmailResponseBody.builder().tnxSource(source)
+        .tnxAmount(amount)
+        .tnxId(tnxId).tnxDate(DateUtils.getFormattedDate(email.getDate(), amount))
+        .tnxDetails(details)
         .build();
   }
 

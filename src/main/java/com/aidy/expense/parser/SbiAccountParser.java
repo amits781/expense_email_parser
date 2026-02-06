@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 import com.aidy.expense.dto.EmailRequestBody;
 import com.aidy.expense.dto.EmailResponseBody;
+import com.aidy.expense.utils.CurrencyUtil;
 import com.aidy.expense.utils.DateUtils;
 
 @Component
@@ -39,10 +40,11 @@ public class SbiAccountParser implements BankEmailParser {
     // SBI Alerts rarely contain a unique Transaction ID in the text body.
     // We return a placeholder.
     String tnxId = "tnx_id";
-
+    amount = CurrencyUtil.getCleanAmount(amount);
     return EmailResponseBody.builder().tnxSource("SBI Account " + account)
-        .tnxAmount(amount.toLowerCase().replace(" ", "")) // rs236.00
-        .tnxId(tnxId).tnxDate(DateUtils.getFormattedDate(email.getDate())).tnxDetails(type).build();
+        .tnxAmount(amount) // rs236.00
+        .tnxId(tnxId).tnxDate(DateUtils.getFormattedDate(email.getDate(), amount)).tnxDetails(type)
+        .build();
   }
 
   /**

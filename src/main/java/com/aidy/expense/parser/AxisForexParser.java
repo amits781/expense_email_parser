@@ -5,13 +5,14 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 import com.aidy.expense.dto.EmailRequestBody;
 import com.aidy.expense.dto.EmailResponseBody;
+import com.aidy.expense.utils.CurrencyUtil;
 import com.aidy.expense.utils.DateUtils;
 
 @Component
 public class AxisForexParser implements BankEmailParser {
 
   private static final Pattern AMOUNT_PATTERN =
-      Pattern.compile("([A-Z]{3}\\s\\d+(?:\\.\\d{1,2})?)");
+      Pattern.compile("([A-Z]{3}\\s\\d+(?:\\.\\d{1,2})?).*?\\sdebited");
   private static final Pattern SOURCE_PATTERN =
       Pattern.compile("(Axis Bank Forex Card no\\.\\s\\S+)");
 
@@ -20,7 +21,6 @@ public class AxisForexParser implements BankEmailParser {
   private static final Pattern DETAILS_PATTERN =
       Pattern.compile("\\s+at\\s+(.*?)\\s*\\.\\s*Available balance");
 
-  private static final Pattern BODY_DATE_PATTERN = Pattern.compile("(\\d{2}-\\d{2}-\\d{4})");
 
   @Override
   public boolean canParse(EmailRequestBody email) {
@@ -34,16 +34,16 @@ public class AxisForexParser implements BankEmailParser {
     String body = email.getBody().replaceAll("\\s+", " ");
 
     String amount = extract(AMOUNT_PATTERN, body, "Unknown Amount");
+    amount = CurrencyUtil.getCleanAmount(amount);
     String sourceRaw = extract(SOURCE_PATTERN, body, "Axis Forex Card");
 
     // Step 2: Extract Details (Merchant Name)
     String details = extract(DETAILS_PATTERN, body, "Unknown Merchant");
 
-    String txnDateInBody = extract(BODY_DATE_PATTERN, body, null);
-    String finalDate =
-        (txnDateInBody != null) ? txnDateInBody : DateUtils.getFormattedDate(email.getDate());
+    String finalDate = DateUtils.getFormattedDate(email.getDate(), amount);
 
-    return EmailResponseBody.builder().tnxSource(sourceRaw).tnxAmount(amount)
+    return EmailResponseBody.builder().tnxSource(sourceRaw)
+        .tnxAmount(amount)
         .tnxId(email.getMessageId()).tnxDate(finalDate).tnxDetails(details)
         .tnxCategory("Forex Card").build();
   }
