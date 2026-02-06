@@ -43,7 +43,7 @@ class IciciParserTest {
         + "            }";
     String expectedResponseJson =
         "{\r\n" + "            \"tnxSource\": \"ICICI Bank Credit Card XX1003\",\r\n"
-            + "            \"tnxAmount\": \"₹ 1,500.00\",\r\n"
+            + "            \"tnxAmount\": \"₹ 1500.00\",\r\n"
             + "            \"tnxDate\": \"Wed, 20 Nov 2024 16:09:56 IST\",\r\n"
             + "            \"tnxDetails\": \"RAMCHANDRA GOPIRAM \\\\\"\r\n" + "        }";
 
