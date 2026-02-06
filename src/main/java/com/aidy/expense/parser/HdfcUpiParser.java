@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 import com.aidy.expense.dto.EmailRequestBody;
 import com.aidy.expense.dto.EmailResponseBody;
+import com.aidy.expense.utils.CurrencyUtil;
 import com.aidy.expense.utils.DateUtils;
 
 
@@ -39,6 +40,7 @@ public class HdfcUpiParser implements BankEmailParser {
         String body = email.getBody();
 
         String amount = extract(AMOUNT_PATTERN, body, "Unknown Amount");
+        amount = CurrencyUtil.getCleanAmount(amount);
         String sourceRaw = extract(SOURCE_PATTERN, body, "HDFC Account");
         String details = extract(DETAILS_PATTERN, body, "Unknown Beneficiary");
         String txnId = extract(TXN_ID_PATTERN, body, "tnx_id");
@@ -48,9 +50,9 @@ public class HdfcUpiParser implements BankEmailParser {
 
         return EmailResponseBody.builder()
                 .tnxSource(formattedSource)
-            .tnxAmount(amount.toLowerCase())
+            .tnxAmount(amount)
                 .tnxId(txnId)
-            .tnxDate(DateUtils.getFormattedDate(email.getDate()))
+            .tnxDate(DateUtils.getFormattedDate(email.getDate(), amount))
                 .tnxDetails(details.trim())
                 .build();
     }

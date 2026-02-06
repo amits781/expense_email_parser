@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 import com.aidy.expense.dto.EmailRequestBody;
 import com.aidy.expense.dto.EmailResponseBody;
+import com.aidy.expense.utils.CurrencyUtil;
 import com.aidy.expense.utils.DateUtils;
 
 
@@ -32,11 +33,13 @@ public class IciciCreditCardParser implements BankEmailParser {
     String body = email.getBody();
 
     String amount = extract(AMOUNT_PATTERN, body, "Unknown");
+    amount = CurrencyUtil.getCleanAmount(amount);
     String details = extract(INFO_PATTERN, body, "Unknown");
     String source = extract(SOURCE_PATTERN, body, "Unknown");
 
-    return EmailResponseBody.builder().tnxSource(source).tnxAmount(amount.toLowerCase())
-        .tnxDate(DateUtils.getFormattedDate(email.getDate())).tnxDetails(details).build();
+    return EmailResponseBody.builder().tnxSource(source)
+        .tnxAmount(amount).tnxDate(DateUtils.getFormattedDate(email.getDate(), amount))
+        .tnxDetails(details).build();
   }
 
   private String extract(Pattern pattern, String text, String defaultValue) {
