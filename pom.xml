@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>4.0.2</version>
+		<relativePath/>
+		<!-- lookup parent from repository -->
+	</parent>
+
+    <groupId>com.aidy.expense</groupId>
+    <artifactId>expense-app</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>Azure Java Functions</name>
+
+    <properties>
+        <spring-boot-thin-layout.version>1.0.31.RELEASE</spring-boot-thin-layout.version>
+		<!-- Spring Boot start class! WARING: correct class must be set! -->
+		<start-class>com.aidy.expense.BankParserApplication</start-class>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>21</java.version>
+        <azure.functions.maven.plugin.version>1.40.0</azure.functions.maven.plugin.version>
+        <azure.functions.java.library.version>3.2.2</azure.functions.java.library.version>
+        <functionAppName>expense-app-1</functionAppName>
+    </properties>
+
+    <dependencies>
+        <!-- Source: https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-function-adapter-azure -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-function-adapter-azure</artifactId>
+            <version>5.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>azure-functions-maven-plugin</artifactId>
+                <version>${azure.functions.maven.plugin.version}</version>
+                <configuration>
+                    <!-- function app name -->
+                    <appName>${functionAppName}</appName>
+                    <!-- function app resource group -->
+                    <resourceGroup>java-functions-group</resourceGroup>
+                    <!-- function app region-->
+                    <!-- refers https://github.com/microsoft/azure-maven-plugins/wiki/Azure-Functions:-Configuration-Details#supported-regions for all valid values -->
+                    <region>westus</region>
+                    <!-- function app service plan name -->
+                    <appServicePlanName>java-functions-app-service-plan</appServicePlanName>
+                    <hostJson>${project.basedir}/host.json</hostJson>
+					<localSettingsJson>${project.basedir}/local.settings.json</localSettingsJson>
+                    <!-- function pricingTier, default to be consumption if not specified -->
+                    <!-- refers https://github.com/microsoft/azure-maven-plugins/wiki/Azure-Functions:-Configuration-Details#supported-pricing-tiers for all valid values -->
+                    <!-- <pricingTier></pricingTier> -->
+                    <!-- Whether to disable application insights, default is false -->
+                    <!-- refers https://github.com/microsoft/azure-maven-plugins/wiki/Azure-Functions:-Configuration-Details for all valid configurations for application insights-->
+                    <!-- <disableAppInsights></disableAppInsights> -->
+                    <runtime>
+                        <!-- runtime os, could be windows, linux (default) or docker-->
+                        <!-- <os>linux</os> -->
+                        <!-- runtime Java version, could be 8, 11, 17, 21 (default) -->
+                        <javaVersion>21</javaVersion>
+                    </runtime>
+                    <funcPort>7071</funcPort>
+                    <appSettings>
+                        <property>
+                            <name>FUNCTIONS_EXTENSION_VERSION</name>
+                            <value>~4</value>
+                        </property>
+                    </appSettings>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>package-functions</id>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--Remove obj folder generated by .NET SDK in maven clean-->
+            <plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<dependencies>
+					<dependency>
+						<groupId>org.springframework.boot.experimental</groupId>
+						<artifactId>spring-boot-thin-layout</artifactId>
+						<version>${spring-boot-thin-layout.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+        </plugins>
+    </build>
+</project>
