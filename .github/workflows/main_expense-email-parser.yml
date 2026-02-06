@@ -13,6 +13,8 @@ env:
   AZURE_FUNCTIONAPP_NAME: expense-email-parser # set this to your function app name on Azure
   PACKAGE_DIRECTORY: '.' # set this to the directory which contains pom.xml file
   JAVA_VERSION: '21' # set this to the java version to use
+  JAVA_TOOL_OPTIONS: "-Dfile.encoding=UTF-8"
+  MAVEN_OPTS: "-Dfile.encoding=UTF-8"
 
 jobs:
   build-and-deploy:
