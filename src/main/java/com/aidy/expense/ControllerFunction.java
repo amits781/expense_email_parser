@@ -39,6 +39,7 @@ public class ControllerFunction {
       if (!secretValidator.test(clientSecret)) {
         throw new ServiceAPIException("Invalid secret key", HttpStatus.UNAUTHORIZED);
       }
+      context.getLogger().info("Email Body: " + request.getBody().get().toString());
       return ResponseHandler.generateResponse(request,
           processBankEmail.apply(request.getBody().get()), HttpStatus.OK, "Success");
 
