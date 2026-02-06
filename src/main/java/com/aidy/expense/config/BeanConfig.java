@@ -14,6 +14,7 @@ import com.aidy.expense.exception.ServiceAPIException;
 import com.aidy.expense.parser.BankEmailParser;
 import com.aidy.expense.repository.ProcessedEmailRepository;
 import com.aidy.expense.service.EmailPersistenceService;
+import com.aidy.expense.utils.HashUtil;
 import com.microsoft.azure.functions.HttpStatus;
 
 @Configuration
@@ -25,7 +26,9 @@ public class BeanConfig {
       EmailPersistenceService persistenceService) {
 
     return request -> {
-      String dbEmailId = request.getCurrUser() + request.getMessageId();
+      String dbEmailId =
+          String.join(":", HashUtil.generateHash(request.getCurrUser().toLowerCase()),
+              request.getMessageId());
       // Check duplicate message
       persistenceService.checkDuplicateProcessing(emailRepository, dbEmailId);
 
@@ -44,7 +47,7 @@ public class BeanConfig {
       }
 
       // Save Entity
-      ProcessedEmail logEntity = mapToEntity(request, response);
+      ProcessedEmail logEntity = mapToEntity(request, response, dbEmailId);
       persistenceService.saveProcessedData(emailRepository, logEntity);
 
       // Return response
@@ -53,8 +56,7 @@ public class BeanConfig {
   }
 
   private ProcessedEmail mapToEntity(EmailRequestBody request,
-      EmailResponseBody response) {
-    String dbEmailId = request.getCurrUser() + request.getMessageId();
+      EmailResponseBody response, String dbEmailId) {
     ProcessedEmail logEntity =
         ProcessedEmail.builder().messageId(dbEmailId).from(request.getFrom())
             .tnxAmountDisplay(response.getTnxAmount()).tnxCategory(response.getTnxCategory())
