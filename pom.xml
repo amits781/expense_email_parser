@@ -21,6 +21,7 @@
         <spring-boot-thin-layout.version>1.0.31.RELEASE</spring-boot-thin-layout.version>
 		<!-- Spring Boot start class! WARING: correct class must be set! -->
 		<start-class>com.aidy.expense.BankParserApplication</start-class>
+    		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>21</java.version>
         <azure.functions.maven.plugin.version>1.40.0</azure.functions.maven.plugin.version>

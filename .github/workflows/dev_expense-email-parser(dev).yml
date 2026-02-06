@@ -13,6 +13,7 @@ env:
   AZURE_FUNCTIONAPP_NAME: expense-email-parser # set this to your function app name on Azure
   PACKAGE_DIRECTORY: '.' # set this to the directory which contains pom.xml file
   JAVA_VERSION: '21' # set this to the java version to use
+  JAVA_TOOL_OPTIONS: "-Dfile.encoding=UTF-8"
 
 jobs:
   build-and-deploy:
@@ -35,7 +36,7 @@ jobs:
         shell: pwsh
         run: |
           pushd './${{ env.PACKAGE_DIRECTORY }}'
-          mvn clean package
+          mvn clean package -Dfile.encoding=UTF-8
           popd
       
       - name: Login to Azure
