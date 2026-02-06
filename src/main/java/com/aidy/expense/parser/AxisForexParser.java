@@ -11,8 +11,8 @@ import com.aidy.expense.utils.DateUtils;
 @Component
 public class AxisForexParser implements BankEmailParser {
 
-  private static final Pattern AMOUNT_PATTERN = Pattern
-      .compile("([A-Z]{3})\\s+([\\d,.]+(?:\\.\\d{1,2})?).*?\\sdebited", Pattern.CASE_INSENSITIVE);
+  private static final Pattern AMOUNT_PATTERN = Pattern.compile(
+      "([A-Z]{3})[\\s\\h]+([\\d,.]+(?:\\.\\d{1,2})?).*?\\sdebited", Pattern.CASE_INSENSITIVE);
   private static final Pattern SOURCE_PATTERN =
       Pattern.compile("(Axis Bank Forex Card no\\.\\s\\S+)", Pattern.CASE_INSENSITIVE);
 
@@ -31,7 +31,7 @@ public class AxisForexParser implements BankEmailParser {
   @Override
   public EmailResponseBody parse(EmailRequestBody email) {
     // Step 1: Normalize the body by replacing all whitespace/newlines with a single space
-    String body = email.getBody().replaceAll("\\s+", " ");
+    String body = email.getBody().replaceAll("\\s+", " ").replace('\u00A0', ' ');
 
     String cleanAmount = "AED ";
 
