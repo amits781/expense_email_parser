@@ -25,8 +25,9 @@ public class BeanConfig {
       EmailPersistenceService persistenceService) {
 
     return request -> {
+      String dbEmailId = request.getCurrUser() + request.getMessageId();
       // Check duplicate message
-      persistenceService.checkDuplicateProcessing(emailRepository, request);
+      persistenceService.checkDuplicateProcessing(emailRepository, dbEmailId);
 
       // Select appropriate parser
       BankEmailParser parser = parsers.stream().filter(p -> p.canParse(request)).findFirst()
@@ -53,8 +54,9 @@ public class BeanConfig {
 
   private ProcessedEmail mapToEntity(EmailRequestBody request,
       EmailResponseBody response) {
+    String dbEmailId = request.getCurrUser() + request.getMessageId();
     ProcessedEmail logEntity =
-        ProcessedEmail.builder().messageId(request.getMessageId()).from(request.getFrom())
+        ProcessedEmail.builder().messageId(dbEmailId).from(request.getFrom())
             .tnxAmountDisplay(response.getTnxAmount()).tnxCategory(response.getTnxCategory())
             .tnxDate(response.getTnxDate()).tnxDetails(response.getTnxDetails())
             .tnxId(response.getTnxId()).tnxSource(response.getTnxSource()).build();

@@ -5,7 +5,6 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import com.aidy.expense.dto.EmailRequestBody;
 import com.aidy.expense.entity.ProcessedEmail;
 import com.aidy.expense.exception.ServiceAPIException;
 import com.aidy.expense.repository.ProcessedEmailRepository;
@@ -27,21 +26,25 @@ public class EmailPersistenceService {
   @Retryable(retryFor = {SQLServerException.class, JDBCConnectionException.class}, maxAttempts = 3,
       backoff = @Backoff(delay = 5000))
   public void checkDuplicateProcessing(ProcessedEmailRepository emailRepository,
-      EmailRequestBody request) {
-    log.info("Attempting to check duplicate transaction: {}", request.getMessageId());
-    if (emailRepository.existsById(request.getMessageId())) {
+      String dbEmailId) {
+    log.info("Attempting to check duplicate transaction: {}", dbEmailId);
+    if (emailRepository.existsById(dbEmailId)) {
       throw new ServiceAPIException("Duplicate Transaction: Email with Message-ID "
-          + request.getMessageId() + " has already been processed.", HttpStatus.CONFLICT);
+          + dbEmailId + " has already been processed.", HttpStatus.CONFLICT);
     }
   }
 
   @Recover
   public void recoverDuplicateCheck(Exception e, ProcessedEmailRepository repo,
-      EmailRequestBody request) {
-    log.error("Duplicate check failed for {}. DB unreachable: {}", request.getMessageId(),
+      String dbEmailId) {
+    log.error("Duplicate check failed for {}. DB unreachable: {}", dbEmailId,
         e.getMessage());
-    throw new ServiceAPIException("Database unavailable for duplicate check",
-        HttpStatus.SERVICE_UNAVAILABLE);
+    if (e instanceof ServiceAPIException serviceException) {
+      throw serviceException;
+    }
+    throw new ServiceAPIException("Database unavailable for duplicate check: " + e.getMessage(),
+        HttpStatus.SERVICE_UNAVAILABLE
+    );
   }
 
   @Recover

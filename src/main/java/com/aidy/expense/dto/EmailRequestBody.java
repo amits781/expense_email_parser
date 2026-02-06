@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EmailRequestBody {
   private String from;
+  private String currUser;
   private String subject;
   private String body;
   private String date;
