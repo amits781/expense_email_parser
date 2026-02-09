@@ -27,6 +27,9 @@ public class ControllerFunction {
   @Autowired
   Predicate<String> secretValidator;
 
+  // @Autowired
+  // Function<String, String> getCategory;
+
 
   @FunctionName("emailParser")
   public HttpResponseMessage emailParser(@HttpTrigger(name = "req", methods = {HttpMethod.POST},
@@ -57,6 +60,32 @@ public class ControllerFunction {
           ex.getMessage());
     }
   }
+
+  // @FunctionName("getCategory")
+  // public HttpResponseMessage getCategory(@HttpTrigger(name = "req",
+  // methods = {HttpMethod.POST, HttpMethod.GET}, // Added GET for easier testing
+  // authLevel = AuthorizationLevel.ANONYMOUS) HttpRequestMessage<Optional<EmailRequestBody>>
+  // request,
+  // final ExecutionContext context) {
+  //
+  // // 1. Extract Query Parameter (e.g., ?details=AMAZON)
+  // String detailsParam = request.getQueryParameters().get("details");
+  //
+  // // 2. Fallback logic: check request body if query param is missing
+  // String searchDetails = (detailsParam != null) ? detailsParam
+  // : request.getBody().map(EmailRequestBody::getBody).orElse("");
+  //
+  // if (searchDetails.isEmpty()) {
+  // return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
+  // .body("Please pass a 'details' query parameter or request body.").build();
+  // }
+  //
+  // // 3. Get your Spring Bean and Predict
+  // String predictedCategory = getCategory.apply(searchDetails);
+  //
+  // return request.createResponseBuilder(HttpStatus.OK).header("Content-Type", "application/json")
+  // .body(Collections.singletonMap("category", predictedCategory)).build();
+  // }
 
 
 }
